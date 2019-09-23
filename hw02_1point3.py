@@ -1,4 +1,3 @@
-
 # challenge 1.3
 class particle(object):
     
@@ -46,34 +45,44 @@ def height(y0,p,newP):
         results[0] = p.y
         results[1] = p.v
         results[2] = results[2]+dt
-    
-    while newP.newY > 0.:
-        yDepForce = g*mass/((1 + results[3]/R)**2)
+        
+    while newP.y > 0.:
+        #print(newP.y)
+        yDepForce = -g*mass/((1 + results[3]/R)**2)
         newP.euler(yDepForce, dt)
-        results[3] = newP.newY
-        results[4] = newP.newV
+        results[3] = newP.y
+        results[4] = newP.v
         results[5] = results[5]+dt
     
     results[6] = abs((results[1] - results[4])/results[1])
     return(results)
+#print(results)    
 results = height(y0,p,newP)
+#print(results)
 # set some bounds to do a binary search
-yH = 100000000. # upper limit
-yL = 1. # lower limit
+yH = 1000000. # upper limit
+yL = 100. # lower limit
+
+#print(results[6])
+
 while True:
-    if(results[6]<.01):
+    
+    if(abs(results[6]-.01) < 0.001 and (results[6] > 0.01)):
+        break
+    
+    elif(results[6] < .01):
         yL = y0
         y0 = (y0+yH)/2
         p = particle(mass,y0,v0)
         newP = particle(mass,y0,v0)
         results = height(y0,p,newP)
-    elif(results[6]>0.1):
+    
+    elif(results[6] > .01):
         yH = y0
         y0 = (y0+yL)/2
         p = particle(mass,y0,v0)
         newP = particle(mass,y0,v0)
-    elif(results[6]<0.100001 or results[6]>0.999999):
-        break
+        results = height(y0,p,newP)
 
 print(y0)    
     
