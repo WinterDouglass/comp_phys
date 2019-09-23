@@ -20,7 +20,7 @@ import math
 
 g = 9.8            # g acceleration
 v0 = 30.           # initial velocity
-
+k = 0.1
 dt = 0.1           # time step
 
 colors = ['red','orange','yellow','green','magenta','cyan','blue','purple','black']
@@ -34,7 +34,8 @@ for angle in range(1,9):
 
     p = particle2(1., 0., 0., vx[0], vy[0])
     while p.y >= 0.:
-        fy = -g
+        fy = -g-k*(abs(p.vy)*p.vy)
+        fx = -k*p.vx*p.vx
         p.euler(0., fy, dt)
         x.append(p.x)
         y.append(p.y)
@@ -53,4 +54,11 @@ for angle in range(1,9):
 
 pyplot.xlabel('position x(m)')
 pyplot.ylabel('position y(m)');
-
+pyplot.show()
+xMax = 0.
+angleMax = 0.
+for i in range(1,len(x)):
+    if(x[i-1] < x[i]):
+        xMax = x[i]
+        angleMax = i*0.1
+print('Max distance: '+ str(xMax)+ ' | Angle of max distance: '+  str(angleMax))
