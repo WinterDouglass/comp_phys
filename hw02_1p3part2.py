@@ -36,7 +36,7 @@ for angle in range(1,9):
     while p.y >= 0.:
         fy = -g-k*(p.vy)*math.sqrt((p.vy)**2 + (p.vx)**2)
         fx = -k*p.vx*math.sqrt((p.vy)**2 + (p.vx)**2)
-        p.euler(0., fy, dt)
+        p.euler(fx, fy, dt)
         x.append(p.x)
         y.append(p.y)
         vx.append(p.vx)
@@ -50,12 +50,12 @@ for angle in range(1,9):
     vy_data = np.array(vy)
     xM.append(p.x)
 
-    #my_plot = pyplot.plot(x_data, y_data, color=(colors[angle]), ls='-', lw=3, label = str(angle*0.1))
-    #pyplot.legend()
+    my_plot = pyplot.plot(x_data, y_data, color=(colors[angle]), ls='-', lw=3, label = str(angle*0.1))
+    pyplot.legend()
 
-#pyplot.xlabel('position x(m)')
-#pyplot.ylabel('position y(m)');
-#pyplot.show()
+pyplot.xlabel('position x(m)')
+pyplot.ylabel('position y(m)');
+pyplot.show()
 xMax = 0.
 angleMax = 0.
 for i in range(1,len(xM)):
