@@ -20,11 +20,11 @@ import math
 
 g = 9.8            # g acceleration
 v0 = 30.           # initial velocity
-
+k = 0.1
 dt = 0.1           # time step
 
 colors = ['red','orange','yellow','green','magenta','cyan','blue','purple','black']
-
+xM = [0]
 for angle in range(1,9):
     x = [0]                                  # we need to initialize the arrays for each value of the angle
     y = [0]
@@ -34,8 +34,9 @@ for angle in range(1,9):
 
     p = particle2(1., 0., 0., vx[0], vy[0])
     while p.y >= 0.:
-        fy = -g
-        p.euler(0., fy, dt)
+        fy = -g-k*(p.vy)*math.sqrt((p.vy)**2 + (p.vx)**2)
+        fx = -k*p.vx*math.sqrt((p.vy)**2 + (p.vx)**2)
+        p.euler(fx, fy, dt)
         x.append(p.x)
         y.append(p.y)
         vx.append(p.vx)
@@ -47,10 +48,18 @@ for angle in range(1,9):
     y_data = np.array(y)
     vx_data = np.array(vx)
     vy_data = np.array(vy)
+    xM.append(p.x)
 
     my_plot = pyplot.plot(x_data, y_data, color=(colors[angle]), ls='-', lw=3, label = str(angle*0.1))
     pyplot.legend()
 
 pyplot.xlabel('position x(m)')
 pyplot.ylabel('position y(m)');
-
+pyplot.show()
+xMax = 0.
+angleMax = 0.
+for i in range(1,len(xM)):
+    if(xM[i-1] < xM[i]):
+        xMax = xM[i]
+        angleMax = i*0.1
+print('Max distance: '+ str(xMax)+ ' | Angle of max distance: '+  str(angleMax*90) + ' Degrees')
