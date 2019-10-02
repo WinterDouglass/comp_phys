@@ -57,12 +57,13 @@ vx = np.zeros(nSteps)
 vy = np.zeros(nSteps)
 
 for j in range(0,nRuns):
-    bJ = b[j]*(2./nRuns)
-    p = particle2(1., x0, bJ, v0x, v0y)
+    b[j] = j*(2./nRuns)
+    p = particle2(1., x0, b[j], v0x, v0y)
     for i in range(1,nSteps):
         p.verlet(dt)
         x[i] = p.x
         y[i] = p.y
         vx[i] = p.vx
         vy[i] = p.vy
+    tanTheta = vy[nSteps-1]/vx[nSteps-1]
     
