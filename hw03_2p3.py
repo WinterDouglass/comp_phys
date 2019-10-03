@@ -39,10 +39,10 @@ class particle2(object):
         
 ###################################
 #            Parameters
-nRuns = 10 # NUMBER OF SIMULATIONS
+nRuns = 40 # NUMBER OF SIMULATIONS
 dt = 0.1 # TIME STEP
-tMax = 2. # SIMULATION RUN TIME
-x0 = -5. # BEGINING X POSITION
+tMax = 13.1 # SIMULATION RUN TIME
+x0 = -10. # BEGINING X POSITION
 E0 = 1. # PARTICLE ENERGY (TO CALCULATE v0x SINCE WE START WITH ONLY KINETIC ENERGY
 v0y = 0. # DON'T WANT ANY INITIAL Y VELOCITY
 ###################################
@@ -57,13 +57,33 @@ vx = np.zeros(nSteps)
 vy = np.zeros(nSteps)
 
 for j in range(0,nRuns):
-    b[j] = j*(2./nRuns)
+    b[j] = (j+1)*(2.5/nRuns)
     p = particle2(1., x0, b[j], v0x, v0y)
-    for i in range(1,nSteps):
+    for i in range(0,nSteps):
         p.verlet(dt)
         x[i] = p.x
         y[i] = p.y
         vx[i] = p.vx
         vy[i] = p.vy
+
     tanTheta = vy[nSteps-1]/vx[nSteps-1]
-    
+    if tanTheta < 0:
+        theta[j] = np.pi + np.arctan(tanTheta)
+    else:
+        theta[j] = np.arctan(tanTheta)
+pyplot.figure()
+plt = pyplot.plot(b,theta)
+pyplot.ylabel('$\Theta$')
+pyplot.xlabel('b');
+pyplot.show()
+
+diffCrossSection = np.zeros(nRuns-1)
+thetaForPlot = np.zeros(nRuns-1)
+for i in range(0,nRuns-1):
+    thetaForPlot[i] = theta[i]
+    diffCrossSection[i] = (b[i]/np.sin(theta[i])*((b[i+1]-b[i])/(theta[i+1]-theta[i])))
+pyplot.figure()
+plt = pyplot.plot(thetaForPlot, diffCrossSection)
+pyplot.xlabel('$\Theta$')
+pyplot.ylabel('$d\sigma/d\Omega$');
+pyplot.show()
