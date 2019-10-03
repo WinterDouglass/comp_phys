@@ -55,35 +55,47 @@ x = np.zeros(nSteps)
 y = np.zeros(nSteps)
 vx = np.zeros(nSteps) 
 vy = np.zeros(nSteps)
-
+# for several values of b
 for j in range(0,nRuns):
-    b[j] = (j+1)*(2.5/nRuns)
-    p = particle2(1., x0, b[j], v0x, v0y)
+    b[j] = (j+1)*(2.5/nRuns) # populate all the b values getting used
+    p = particle2(1., x0, b[j], v0x, v0y) # initialize the partice object
+    
+    # calculating positions and velocities of the particle for each b
     for i in range(0,nSteps):
         p.verlet(dt)
         x[i] = p.x
         y[i] = p.y
         vx[i] = p.vx
         vy[i] = p.vy
-
+        
+    # get the tangent for theta using the final velocities
     tanTheta = vy[nSteps-1]/vx[nSteps-1]
+    # np.arctan does spooky things we don't like so these statements correct it
+    # it goes from -pi/2 to pi/2 but we want 0 to pi so the negative values need to be adjusted
     if tanTheta < 0:
         theta[j] = np.pi + np.arctan(tanTheta)
     else:
         theta[j] = np.arctan(tanTheta)
+# plot Theta vs b
 pyplot.figure()
 plt = pyplot.plot(b,theta)
+pyplot.title('Scattering Angle vs Vertical Displacement')
 pyplot.ylabel('$\Theta$')
 pyplot.xlabel('b');
 pyplot.show()
 
+#here we calcullate the differential cross section
 diffCrossSection = np.zeros(nRuns-1)
 thetaForPlot = np.zeros(nRuns-1)
 for i in range(0,nRuns-1):
     thetaForPlot[i] = theta[i]
-    diffCrossSection[i] = (b[i]/np.sin(theta[i])*((b[i+1]-b[i])/(theta[i+1]-theta[i])))
+    diffCrossSection[i] = (b[i]/np.sin(theta[i])*abs((b[i+1]-b[i])/(theta[i+1]-theta[i])))
+
+# and finaly plot differential cross section as a function of the scattering angle
 pyplot.figure()
 plt = pyplot.plot(thetaForPlot, diffCrossSection)
+pyplot.title('Differential Cross Section as a Function of Scattering Angle')
 pyplot.xlabel('$\Theta$')
 pyplot.ylabel('$d\sigma/d\Omega$');
 pyplot.show()
+
